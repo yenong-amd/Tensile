@@ -120,6 +120,7 @@ def buildSourceCodeObjectFile(outputPath, kernelFile):
     archFlags = ['-amdgpu-target=gfx'+''.join(map(str,arch)) for arch in globalParameters['SupportedISA']]
 
     hipFlags = subprocess.check_output([which('hcc-config'), '--cxxflags', '--shared']).decode().split(' ')
+    hipFlags += subprocess.check_output([which('hipconfig'), '-C']).decode().split(' ')
     hipLinkFlags = subprocess.check_output([which('hcc-config'), '--ldflags', '--shared']).decode().split(' ')
 
     hipFlags += ['-I', outputPath]
