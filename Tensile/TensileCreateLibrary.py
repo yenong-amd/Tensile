@@ -255,6 +255,7 @@ def writeSolutionsAndKernels(outputPath, problemTypes, solutions, kernels, kerne
     kernelHeaderFile.write("#pragma once\n")
     if globalParameters["RuntimeLanguage"] == "HIP":
       kernelHeaderFile.write("#include <hip/hip_runtime.h>\n\n")
+      kernelHeaderFile.write("#include <hip/hip_hcc.h>\n\n")
     kernelHeaderFile.write("#include \"KernelHeader.h\"\n\n")
   else:
     kernelSourceFile = None
