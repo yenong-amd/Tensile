@@ -20,7 +20,7 @@
 ################################################################################
 
 cmake_minimum_required(VERSION 3.5)
-cmake_policy( VERSION 3.5...3.16 )
+cmake_policy( VERSION 3.5...3.15 )
 
 option(TENSILE_NEW_CLIENT "Build the new client" ON)
 
