@@ -36,6 +36,7 @@ class CMakeEnvironment:
 
         args = ['cmake']
         args += itertools.chain.from_iterable([ ['-D', '{}={}'.format(key, value)] for key,value in self.options.items()])
+        args += ['-Wdev', '--debug-output', '--trace']
         args += [self.sourceDir]
 
         Common.print2(' '.join(args))
@@ -75,4 +76,3 @@ def getClientExecutable(builddir=None):
         buildEnv.build()
 
     return buildEnv.builtPath("client/tensile_client")
-
