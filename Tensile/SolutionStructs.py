@@ -3229,7 +3229,8 @@ class Solution:
       ldsSize = ldsNumElementsRemapC * state["ProblemType"]["DataType"].numBytes()
       if not math.log(state["MacroTile0"],2).is_integer() or \
           ldsSize > globalParameters["MaxLDS"] or \
-          (state["GlobalSplitU"] > 1) and (state["_GlobalAccumulation"] != 'MultipleBuffer'):
+          (state["GlobalSplitU"] > 1) and (state["_GlobalAccumulation"] != 'MultipleBuffer') or\
+          state["MatrixInstBN"] > 1 and state["MatrixInstN"] == 4:
         state["StoreRemapVectorWidth"] = 0
       else:
         state["StoreRemapVectorWidth"] = defaultRemap
