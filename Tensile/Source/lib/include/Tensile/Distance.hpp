@@ -197,8 +197,9 @@ namespace Tensile
                 for(int i = 0; i < p1.size(); i++)
                 {
                     double di = p1[i] - p2[i];
-                    distance += di * di;
+                    distance += (di * di);
                 }
+
                 return distance;
             }
 
@@ -328,6 +329,63 @@ namespace Tensile
                                             double     bestDistance) const
             {
                 return true;
+            }
+        };
+
+        template <typename Key>
+        struct ProposedDistance : public Distance<Key>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false
+            };
+
+            static std::string Type()
+            {
+                return "Proposed";
+            }
+            virtual std::string type() const override
+            {
+                return Type();
+            }
+
+            inline double operator()(Key const& p1, Key const& p2) const
+            {
+                double distance = 0.0;
+
+                double M = p2[0];
+                double N = p2[1];
+                double K = p2[2];
+                int stepM = 1;
+                int stepN = 1;
+
+                stepM = std::ceil(p1[0]/M);
+                stepN = std::ceil(p1[1]/N);
+
+                if (p1[0]<=32768 && p1[1]<=32768) {
+                    distance = std::round(100 * stepM * stepN / std::pow((p1[0]*p1[1])/(stepM*M*stepN*N),2) );
+                    distance += (std::abs(K-p1[2])/(K+p1[2]*8));
+                } else if (p1[0]<=32768) {
+                    distance = std::round(10000 * stepM * std::pow(std::pow(p1[0]-p2[0],2) + std::pow(p1[1]-p2[1],2),0.5));
+                    distance += (std::abs(K-p1[2])/(K+p1[2]*8));
+                } else if (p1[1]<=32768) {
+                    distance = std::round(10000 * stepN * std::pow(std::pow(p1[0]-p2[0],2) + std::pow(p1[1]-p2[1],2),0.5));
+                    distance += (std::abs(K-p1[2])/(K+p1[2]*8));
+                } else {
+                    distance = std::round(10000 * std::pow(std::pow(p1[0]-p2[0],2) + std::pow(p1[1]-p2[1],2),0.5));
+                    distance += (std::abs(K-p1[2])/(K+p1[2]*8));
+                }
+
+                return distance;
+            }
+
+            inline bool improvementPossible(Key const& p1,
+                                            Key const& p2,
+                                            size_t     idx,
+                                            double     bestDistance) const
+            {
+                return 1;
             }
         };
 
