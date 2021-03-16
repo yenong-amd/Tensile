@@ -33,7 +33,8 @@ import time
 import tempfile
 import getpass
 from uuid import uuid4
-#import multiprocessing
+#
+import multiprocessing
 
 startTime = time.time()
 
@@ -48,6 +49,7 @@ ParallelMap = Parallel.ParallelMap
 # Global Parameters
 ################################################################################
 globalParameters = OrderedDict()
+#globalParameters = multiprocessing.Manager().OrderedDict()
 workingDirectoryStack = []
 
 ########################################
@@ -1683,7 +1685,11 @@ def assignGlobalParameters( config ):
   globalParameters["ROCmBinPath"] = os.path.join(globalParameters["ROCmPath"], "bin")
 
   # ROCm Agent Enumerator Path
-  globalParameters["ROCmAgentEnumeratorPath"] = locateExe(globalParameters["ROCmBinPath"], "rocm_agent_enumerator")
+  if os.name == "nt":
+    globalParameters["ROCmAgentEnumeratorPath"] = locateExe(globalParameters["ROCmBinPath"], "hipinfo.exe")
+  else:
+    globalParameters["ROCmAgentEnumeratorPath"] = locateExe(globalParameters["ROCmBinPath"], "rocm_agent_enumerator")
+
   if "CxxCompiler" in config:
     globalParameters["CxxCompiler"] = config["CxxCompiler"]
 
@@ -1694,7 +1700,10 @@ def assignGlobalParameters( config ):
 
   globalParameters["ROCmSMIPath"] = locateExe(globalParameters["ROCmBinPath"], "rocm-smi")
   globalParameters["ExtractKernelPath"] = locateExe(os.path.join(globalParameters["ROCmPath"], "hip/bin"), "extractkernel")
-  globalParameters["ClangOffloadBundlerPath"] = locateExe(os.path.join(globalParameters["ROCmPath"], "llvm/bin"), "clang-offload-bundler")
+  if "TENSILE_ROCM_OFFLOAD_BUNDLER_PATH" in os.environ:
+    globalParameters["ClangOffloadBundlerPath"] = os.environ.get("TENSILE_ROCM_OFFLOAD_BUNDLER_PATH")
+  else:
+    globalParameters["ClangOffloadBundlerPath"] = locateExe(os.path.join(globalParameters["ROCmPath"], "llvm/bin"), "clang-offload-bundler")
 
   if "ROCmAgentEnumeratorPath" in config:
     globalParameters["ROCmAgentEnumeratorPath"] = config["ROCmAgentEnumeratorPath"]
@@ -1705,7 +1714,7 @@ def assignGlobalParameters( config ):
       process = subprocess.run([globalParameters["ROCmAgentEnumeratorPath"]], check=True, stdout=subprocess.PIPE)
       line = ""
       for line_in in process.stdout.decode().splitlines():
-        if 'gcnArch' in line_in:
+        if 'gcnArchName:' in line_in:
           line += "gfx" + line_in.split()[1]
           break
 
@@ -1756,7 +1765,11 @@ def assignGlobalParameters( config ):
   # The alternative would be to install the `distro` package.
   # See https://docs.python.org/3.7/library/platform.html#platform.linux_distribution
   try:
-    output = subprocess.run(["hipcc", "--version"], check=True, stdout=subprocess.PIPE).stdout.decode()
+    if os.name == "nt":
+      compiler = "hipcc.bat"
+    else:
+      compiler = "hipcc"
+    output = subprocess.run([compiler, "--version"], check=True, stdout=subprocess.PIPE).stdout.decode()
 
     for line in output.split('\n'):
       if 'HIP version' in line:

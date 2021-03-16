@@ -90,37 +90,25 @@ def getAssemblyCodeObjectFiles(kernels, kernelWriterAssembly, outputPath):
           coFile = os.path.join(os.path.normcase(destArchDir), 'TensileLibrary_{}.co'.format(archName))
 
         if os.name == "nt":
-          # On Windows, processing the objectFiles list in a single chunk makes the
-          # command line (including spaces) exceeds the limit of 8191 characters.
-          rv = ["C:\\hip\\bin\\clang++.exe", "-target", "amdgcn-amd-amdhsa", "-o", "-"]
-          L0 = len(" ".join(rv))
+          # On Windows, the objectFiles list command line (including spaces) 
+          # exceeds the limit of 8191 characters, so using response file
 
-          l = L0
-          slice = []
-          with open(coFile, 'wb') as file:
-            for obj in objectFiles:
-              if l + len(obj) < 8100 and obj != objectFiles[-1]:
-                  slice.append(obj)
-                  l = len(" ".join(slice))
-              else:
-                  if obj == objectFiles[-1]:
-                      slice.append(obj)
-                      l = len(" ".join(slice))
-                      newslice = []
-                  else:
-                      newslice = [obj]
-                  args = kernelWriterAssembly.getLinkCodeObjectArgs(slice, "-")
-                  result = subprocess.check_output(args, cwd=str(asmDir))
-                  file.write(result)
-                  file.flush()
+          responseArgs = objectFiles
+          responseFile = os.path.join(asmDir, 'clangArgs.txt')
+          with open(responseFile, 'wt') as file:
+            file.write( " ".join(responseArgs) )
+            file.flush()
 
-                  l = L0 + len(" ".join(newslice))
-                  slice = newslice
+          args = [globalParameters['AssemblerPath'], '-target', 'amdgcn-amd-amdhsa', '-o', coFile, '@clangArgs.txt']
+          subprocess.check_call(args, cwd=asmDir)
         else:
           args = kernelWriterAssembly.getLinkCodeObjectArgs(objectFiles, coFile)
           subprocess.check_call(args, cwd=asmDir)
-          coFiles.append(coFile)
+
+        coFiles.append(coFile)
       else:
+        # no mergefiles
+        
         assemblyKernelNames = [kernelWriterAssembly.getKernelFileBase(k) for k in archKernels]
         origCOFiles = [os.path.join(asmDir,  k + '.co') for k in assemblyKernelNames]
         newCOFiles  = []
@@ -1572,9 +1560,13 @@ def TensileCreateLibrary():
 
   codeObjectFiles = writeSolutionsAndKernels(outputPath, CxxCompiler, problemTypes, solutions,
                                              kernels, kernelHelperOjbs, solutionWriter, kernelWriterSource, kernelWriterAssembly)
+  
+  bothLibSet = set(sourceLibPaths + asmLibPaths)
+  setA = set( map( os.path.normcase, set(codeObjectFiles) ) ) 
+  setB = set( map( os.path.normcase, bothLibSet ) )
 
-  sanityCheck0 = set(codeObjectFiles) - set(sourceLibPaths + asmLibPaths)
-  sanityCheck1 = set(sourceLibPaths + asmLibPaths) - set(codeObjectFiles)
+  sanityCheck0 = setA - setB 
+  sanityCheck1 = setB - setA 
 
   if globalParameters["PrintCodeCommands"]:
     print("codeObjectFiles:", codeObjectFiles);
