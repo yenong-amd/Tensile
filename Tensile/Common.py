@@ -1579,7 +1579,7 @@ def tryAssembler(isaVersion, asmString, debug=False, *options):
 
 def gfxArch(name):
     import re
-    match = re.search(r'gfx(\S{3,})', name)
+    match = re.search(r'gfx([0-9a-fA-F]+).*', name)
     if not match: return None
 
     ipart = match.group(1)
@@ -1714,10 +1714,9 @@ def assignGlobalParameters( config ):
       process = subprocess.run([globalParameters["ROCmAgentEnumeratorPath"]], check=True, stdout=subprocess.PIPE)
       line = ""
       for line_in in process.stdout.decode().splitlines():
-        if 'gcnArchName:' in line_in:
-          line += "gfx" + line_in.split()[1]
+        if 'gcnArchName' in line_in:
+          line += line_in.split()[1]
           break
-
       arch = gfxArch(line.strip())
       if arch is not None:
         if arch in globalParameters["SupportedISA"]:
@@ -1735,8 +1734,8 @@ def assignGlobalParameters( config ):
         line = process.stdout.readline().decode()
     if globalParameters["CurrentISA"] == (0,0,0):
       printWarning("Did not detect SupportedISA: %s; cannot benchmark assembly kernels." % globalParameters["SupportedISA"])
-    if result.returncode:
-      printWarning("%s exited with code %u" % (globalParameters["ROCmAgentEnumeratorPath"], result.returncode))
+    if process.returncode:
+      printWarning("%s exited with code %u" % (globalParameters["ROCmAgentEnumeratorPath"], process.returncode))
 
   # TODO Remove this when rocm-smi supports gfx90a
   if globalParameters["CurrentISA"] == (9,0,10):
