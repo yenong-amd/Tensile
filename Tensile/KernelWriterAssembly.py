@@ -4071,7 +4071,7 @@ class KernelWriterAssembly(KernelWriter):
     # graShift requires a vgpr for each address component (so each component
     # can be examined and shifted if necessary) - therefore does not work
     # with UseSgprForGRO.
-    assert(not kernel["_UseSgprForGRO"])
+    assert not kernel["_UseSgprForGRO"], self.kernelName
 
     kStr = ""
     tc = tP["tensorChar"]
