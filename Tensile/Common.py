@@ -2186,6 +2186,9 @@ def assignGlobalParameters( config ):
     if os.name == "nt":
       globalParameters["CurrentISA"] = (9,0,6)
       printWarning("Failed to detect ISA so forcing (gfx906) on windows")
+  if globalParameters["CurrentISA"] == (9,4,2):
+    printWarning("HardwareMonitor currently disabled for gfx942")
+    globalParameters["HardwareMonitor"] = False
 
   if globalParameters["CurrentISA"] == (9,4,2) or globalParameters["CurrentISA"] == (11,0,0) or \
      globalParameters["CurrentISA"] == (11,0,1) or globalParameters["CurrentISA"] == (11,0,2):
