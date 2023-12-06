@@ -241,8 +241,7 @@ namespace Tensile
         virtual SolutionSet<MySolution> findAllSolutions(MyProblem const& problem,
                                                          Hardware const&  hardware) const override
         {
-            SolutionMap<MySolution>::iterator it;
-            for(it = solutions.begin(); it != solutions.end(); it++)
+            for(auto it = solutions.begin(); it != solutions.end(); it++)
             {
                 std::cout << it->first << ':' << it->second->KernelName() << std::endl;
             }
