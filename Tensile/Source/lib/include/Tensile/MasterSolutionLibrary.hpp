@@ -243,7 +243,8 @@ namespace Tensile
         {
             for(auto it = solutions.begin(); it != solutions.end(); it++)
             {
-                std::cout << it->first << ':' << it->second->KernelName() << std::endl;
+                std::cout << it->first << ": (" << it->second->index << ")"
+                          << it->second->KernelName() << std::endl;
             }
             return library->findAllSolutions(problem, hardware);
         }
