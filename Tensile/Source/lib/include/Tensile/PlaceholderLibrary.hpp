@@ -133,9 +133,12 @@ namespace Tensile
             {
                 auto newLibrary = LoadLibraryFile<MyProblem, MySolution>(
                     (libraryDirectory + "/" + filePrefix + suffix).c_str());
+                rocblas_cout << "Placeholderlibrary " << libraryDirectory << "/ " << filePrefix
+                             << " " << suffix << std::endl;
                 auto mLibrary
                     = static_cast<MasterSolutionLibrary<MyProblem, MySolution>*>(newLibrary.get());
                 library = mLibrary->library;
+                rocblas_cout << "solutions size " << mLibrary->solutions.size() << std::endl;
                 std::lock_guard<std::mutex> lock(*solutionsGuard);
                 masterSolutions->insert(mLibrary->solutions.begin(), mLibrary->solutions.end());
 
