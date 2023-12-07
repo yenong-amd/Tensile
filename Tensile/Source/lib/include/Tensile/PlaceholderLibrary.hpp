@@ -207,6 +207,9 @@ namespace Tensile
             for(auto& solution : solutions)
             {
                 solution->codeObjectFilename = getCodeObjectFileName(hardware, *solution);
+                rocblas_cout << "Solution index " << solution->index << ", codefile "
+                             << solution->codeObjectFilename << ", kernelname "
+                             << solution->KernelName() << std::endl;
             }
 
             return solutions;
