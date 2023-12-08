@@ -168,7 +168,7 @@ namespace Tensile
             }
             else
                 coFileDependency += std::string(".co");
-
+            std::cout << "Placeholder coFile " << coFileDependency << std::endl;
             return coFileDependency;
         }
 
@@ -207,9 +207,6 @@ namespace Tensile
             for(auto& solution : solutions)
             {
                 solution->codeObjectFilename = getCodeObjectFileName(hardware, *solution);
-                std::cout << "Solution index " << solution->index << ", codefile "
-                          << solution->codeObjectFilename << ", kernelname "
-                          << solution->KernelName() << std::endl;
             }
 
             return solutions;
