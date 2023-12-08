@@ -182,7 +182,9 @@ namespace Tensile
                 if(!iot::outputting(io))
                 {
                     std::cout << "Tensile Serialization not outputting " << solutions.size()
-                              << " first index " << solutions[0]->index << std::endl;
+                              << std::endl;
+                    if(solutions.size() > 0)
+                        std::cout << "First index " << solutions[0]->index << std::endl;
                     for(auto const& s : solutions)
                         lib.solutions[s->index] = s;
 
