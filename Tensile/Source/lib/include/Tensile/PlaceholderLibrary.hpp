@@ -140,10 +140,11 @@ namespace Tensile
                 library = mLibrary->library;
                 std::cout << "solutions size " << mLibrary->solutions.size() << std::endl;
                 std::lock_guard<std::mutex> lock(*solutionsGuard);
-                std::cout << "masterSolutions before insert " << masterSolutions.size()
+                std::cout << "masterSolutions before insert " << masterSolutions->size()
                           << std::endl;
                 masterSolutions->insert(mLibrary->solutions.begin(), mLibrary->solutions.end());
-                std::cout << "masterSolutions after insert " << masterSolutions.size() << std::endl;
+                std::cout << "masterSolutions after insert " << masterSolutions->size()
+                          << std::endl;
                 return mLibrary;
             }
 
