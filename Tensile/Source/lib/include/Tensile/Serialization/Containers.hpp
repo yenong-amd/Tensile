@@ -33,6 +33,7 @@
 #include <Tensile/DecisionTreeLibrary.hpp>
 #include <Tensile/ExactLogicLibrary.hpp>
 #include <Tensile/GranularitySelectionLibrary.hpp>
+#include <Tensile/IntensitySelectionLibrary.hpp>
 #include <Tensile/PropertyMatching.hpp>
 
 #include <cstddef>

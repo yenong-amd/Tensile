@@ -237,7 +237,10 @@ namespace Tensile
    */
         ProjectedPerformance projectedPerformance(Problem const&  problem,
                                                   Hardware const& hardware) const;
-
+        /**
+     * Use arithmetic intensity and K to find winning solution
+    */
+        double streamKSolution(double arithmeticIntensity, size_t problemK) const;
         /**
    * Generate a set of kernel calls to solve a particular problem.
    */

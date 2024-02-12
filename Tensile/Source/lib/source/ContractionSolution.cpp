@@ -1702,7 +1702,29 @@ namespace Tensile
 
         return pp;
     }
+    double ContractionSolution::streamKSolution(double arithmeticIntensity, size_t problemK) const
+    {
+        if(ideals.empty())
+            return -1.0;
 
+        auto ctrlpoint = ideals.rbegin()->first;
+        if(ideals.find(problemK) == ideals.end())
+        {
+            // key not in map
+            if(problemK < ctrlpoint)
+                ctrlpoint = ideals.upper_bound(problemK)->first;
+        }
+        else
+        {
+            ctrlpoint = problemK;
+        }
+
+        // std::cout << "problemK " << problemK << ", control point " << ctrlpoint << std::endl;
+        if(ideals.at(ctrlpoint) < 0)
+            return ideals.at(ctrlpoint);
+        else
+            return (arithmeticIntensity - ideals.at(ctrlpoint));
+    }
     ContractionSolution::TAMetricProblemScore ContractionSolution::computeProblemScore(
         Hardware const& hardware, double M, double N, double K, double NumBatches) const
     {

@@ -30,6 +30,7 @@
 #include <Tensile/ContractionSolution.hpp>
 #include <Tensile/ExactLogicLibrary.hpp>
 #include <Tensile/GranularitySelectionLibrary.hpp>
+#include <Tensile/IntensitySelectionLibrary.hpp>
 #include <Tensile/MapLibrary.hpp>
 #include <Tensile/MasterSolutionLibrary.hpp>
 #include <Tensile/MatchingLibrary.hpp>
@@ -51,4 +52,6 @@ namespace Tensile
     using ContractionProblemPredicate  = ProblemPredicate<ContractionProblem>;
     using ContractionGranularitySelectionLibrary
         = GranularitySelectionLibrary<ContractionProblem, ContractionSolution>;
+    using ContractionAISelectionLibrary
+        = IntensitySelectionLibrary<ContractionProblem, ContractionSolution>;
 } // namespace Tensile
