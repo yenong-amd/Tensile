@@ -136,7 +136,7 @@ namespace Tensile
                 if(!tensile_metric.empty())
                     distanceType = tensile_metric;
 
-                if(distanceType == "Euclidean")
+                if((distanceType == "Euclidean") || (distanceType == "Intensity"))
                 {
                     success = mappingDistance<Key, Matching::EuclideanDistance<Key>>(
                         io, lib, properties);
