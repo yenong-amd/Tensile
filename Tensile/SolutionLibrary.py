@@ -114,6 +114,13 @@ class MatchingLibrary:
                 key = list([row[0][i] for i in keyOrder])
                 if distance == "GridBased":
                     entry = {"key": key, "index": value}
+                elif distance == "Intensity":
+                    # TODO: generalize intensity calculation
+                    m = row[0][0]
+                    n = row[0][1]
+                    k = row[0][3]
+                    intensity = (2 * m * n * k + 2 * m * n) / (2 * (2 * m * n + n * k + m * k))
+                    entry = {"key": key, "index": value, "speed": round(intensity, 3)}
                 else:
                     entry = {"key": key, "index": value, "speed": row[1][1]}
 
