@@ -154,27 +154,33 @@ namespace Tensile
 
                 double bestDistance  = std::numeric_limits<double>::max();
                 double probIntensity = object.arithmeticIntensity();
-                std::cout << "Problem arithmetic intensity " << probIntensity << std::endl;
+                // std::cout << "Problem arithmetic intensity " << probIntensity << std::endl;
 
                 ReturnValue bestMatch = transform(iter->value);
                 if(bestMatch != nullptr)
                     bestDistance = std::fabs(iter->speed - probIntensity);
-                std::cout << "best distance " << bestDistance << std::endl;
+                // std::cout << "best distance " << bestDistance << std::endl;
 
                 iter++;
                 while(iter != this->table.end())
                 {
                     auto myDistance = std::fabs(iter->speed - probIntensity);
+                    auto myMatch    = transform(iter->value);
+                    // std::cout << "distance " << myDistance << std::endl;
+                    // std::cout << "myMatch " << myMatch << std::endl;
                     if(myDistance < bestDistance)
                     {
-                        bestMatch    = transform(iter->value);
-                        bestDistance = myDistance;
-                        std::cout << "best distance " << bestDistance << std::endl;
+                        if(myMatch && myMatch->canSolve(object, hardware))
+                        {
+                            bestMatch    = myMatch;
+                            bestDistance = myDistance;
+                            // std::cout << "best distance " << bestDistance << std::endl;
+                        }
                     }
                     ++iter;
                 };
-                std::cout << "outer loop" << std::endl;
-                std::cout << "Picking " << bestMatch->name() << std::endl;
+                // std::cout << "outer loop" << std::endl;
+                // std::cout << "Picking " << bestMatch->name() << std::endl;
                 return bestMatch;
             }
 
