@@ -155,25 +155,28 @@ namespace Tensile
                 double bestDistance  = std::numeric_limits<double>::max();
                 double probIntensity = std::log(object.arithmeticIntensity());
                 auto   probMNK       = object.problemSizes();
-                std::cout << "problem sizes " << probMNK[0] << ", " << probMNK[1] << ", "
-                          << probMNK[2] << std::endl;
+                double probM         = std::log10(probMNK[0]);
+                double probN         = std::log10(probMNK[1]);
+                double probK         = std::log10(probMNK[2]);
 
-                // double probM         = std::log10();
-                // double probN         = std::log10();
-                // double probK         = std::log10();
-                double tuneM = std::log10(iter->key[0]);
-                double tuneN = std::log10(iter->key[1]);
-                double tuneK = std::log10(iter->key[2]);
+                double distM = std::log10(iter->key[0]) - probM;
+                double distN = std::log10(iter->key[1]) - probN;
+                double distK = std::log10(iter->key[2]) - probK;
+                double distI = std::log(iter->speed) - probIntensity;
 
                 ReturnValue bestMatch = transform(iter->value);
                 if(bestMatch != nullptr)
-                    bestDistance = std::fabs(iter->speed - probIntensity);
-                // std::cout << "best distance " << bestDistance << std::endl;
-
+                    bestDistance = distM * distM + distN * distN + distK * distK + distI * distI;
+                std::cout << "M " << distM << ", N " << distN << ", K " << distK << ", I " << distI
+                          << std::endl;
                 iter++;
                 while(iter != this->table.end())
                 {
-                    auto myDistance = std::fabs(iter->speed - probIntensity);
+                    distM           = std::log10(iter->key[0]) - probM;
+                    distN           = std::log10(iter->key[1]) - probN;
+                    distK           = std::log10(iter->key[2]) - probK;
+                    distI           = std::log(iter->speed) - probIntensity;
+                    auto myDistance = distM * distM + distN * distN + distK * distK + distI * distI;
                     auto myMatch    = transform(iter->value);
                     // std::cout << "distance " << myDistance << std::endl;
                     // std::cout << "myMatch " << myMatch << std::endl;
