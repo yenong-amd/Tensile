@@ -154,8 +154,13 @@ namespace Tensile
 
                 double bestDistance  = std::numeric_limits<double>::max();
                 double probIntensity = object.arithmeticIntensity();
-                // std::cout << "Problem arithmetic intensity " << probIntensity << std::endl;
-
+                std::cout << "M " << iter->key[0] << ", N " << iter->key[1] << ", K "
+                          << iter->key[2] << std::endl;
+                std::cout << "log M " << std::log10(iter->key[0]) << ", log N "
+                          << std::log10(iter->key[1]) << ", log K " << std::log10(iter->key[2])
+                          << std::endl;
+                std::cout << "Problem arithmetic intensity " << probIntensity << std::endl;
+                std::cout << "log arithmetic intensity " << std::log(probIntensity) << std::endl;
                 ReturnValue bestMatch = transform(iter->value);
                 if(bestMatch != nullptr)
                     bestDistance = std::fabs(iter->speed - probIntensity);
